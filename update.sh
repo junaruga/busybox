@@ -50,7 +50,9 @@ for arch in ${ARCHS}; do
             echo "  docker run --rm --privileged multiarch/qemu-user-static:register --reset."
             for module in $("./bin/busybox" --list-modules); do
                 mkdir -p "$(dirname $module)"
-                ln -s /bin/busybox "${module}"
+                if [ "${module}" != "bin/busybox" ]; then
+                    ln -s /bin/busybox "${module}"
+                fi
             done
         )
     fi
@@ -76,7 +78,7 @@ for arch in ${ARCHS}; do
         )
     fi
 
-    if [ -n "${qemu_arch}" -a ! -f "${arch}/x86_64-${qemu_arch}-static.tar.gz" ]; then
+    if [ -n "${qemu_arch}" -a ! -f "${arch}/x86_64_qemu-${qemu_arch}-static.tar.gz" ]; then
         wget ${wget_opts} https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0-2/x86_64_qemu-${qemu_arch}-static.tar.gz -O "${arch}/x86_64_qemu-${qemu_arch}-static.tar.gz"
     fi
 
@@ -126,7 +128,7 @@ EOF
         docker build -t "multiarch/busybox:${arch}-slim" "${arch}/slim"
         docker build -t "multiarch/busybox:${arch}" "${arch}"
         if [ -n "${qemu_arch}" -o "${arch}" = "amd64" ]; then
-            docker run -it --rm "multiarch/busybox:${arch}" uname -a
+            docker run -t --rm "multiarch/busybox:${arch}" uname -a
         fi
     )
 

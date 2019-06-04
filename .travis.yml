@@ -36,6 +36,8 @@ env:
         - ARCHS=sh4
         - ARCHS=sparc64
         - ARCHS=x32
+before_install:
+    - docker run --rm --privileged multiarch/qemu-user-static:register
 script:
     - ./update.sh
     - docker images

@@ -46,6 +46,7 @@ for arch in ${ARCHS}; do
         pushd "${arch}/slim/rootfs"
         echo "This need binfmt to be configured"
         echo "  docker run --rm --privileged multiarch/qemu-user-static:register --reset."
+        ls -l $(pwd)/bin
         modules=$("$(pwd)/bin/busybox" --list-modules)
         for module in $modules; do
             mkdir -p "$(dirname $module)"

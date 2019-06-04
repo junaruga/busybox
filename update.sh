@@ -48,7 +48,8 @@ for arch in ${ARCHS}; do
             cd "${arch}/slim/rootfs"
             echo "This need binfmt to be configured"
             echo "  docker run --rm --privileged multiarch/qemu-user-static:register --reset."
-            for module in $("./bin/busybox" --list-modules); do
+            modules=$("$(pwd)/bin/busybox" --list-modules)
+            for module in $modules; do
                 mkdir -p "$(dirname $module)"
                 if [ "${module}" != "bin/busybox" ]; then
                     ln -s /bin/busybox "${module}"

@@ -3,8 +3,7 @@ set -xeo pipefail
 
 ARCHS=${ARCHS:-"alpha amd64 arm64 armel armhf hppa hurd-i386 i386 kfreebsd-amd64 kfreebsd-i386 m68k mips mipsel powerpc powerpcspe ppc64 ppc64el s390x sh4 sparc64 x32"}
 
-wget_common_opts="-t 3 -w 1 --retry-connrefused --no-dns-cache --retry-on-http-error=403"
-wget_opts="${wget_common_opts} -N"
+wget_opts="-t 3 -w 1 --retry-connrefused --no-dns-cache --retry-on-http-error=403"
 
 for arch in ${ARCHS}; do
     mkdir -p "${arch}/slim"
@@ -27,8 +26,7 @@ for arch in ${ARCHS}; do
     if [ ! -f "${arch}/busybox-static.deb" ]; then
         (
             set -x
-            wget ${wget_opts} "${deb}"
-            mv "$(basename ${deb})" "${arch}/busybox-static.deb"
+            wget ${wget_opts} "${deb}" -O "${arch}/busybox-static.deb"
         )
     fi
 
@@ -78,8 +76,8 @@ for arch in ${ARCHS}; do
         )
     fi
 
-    if [ -n "${qemu_arch}" -a ! -f "${arch}/qemu-${qemu_arch}-static.tar.xz" ]; then
-        wget https://github.com/multiarch/qemu-user-static/releases/download/v2.0.0/amd64_qemu-${qemu_arch}-static.tar.xz -O "${arch}/qemu-${qemu_arch}-static.tar.xz"
+    if [ -n "${qemu_arch}" -a ! -f "${arch}/x86_64-${qemu_arch}-static.tar.gz" ]; then
+        wget ${wget_opts} https://github.com/multiarch/qemu-user-static/releases/download/v4.0.0-2/x86_64_qemu-${qemu_arch}-static.tar.gz -O "${arch}/x86_64_qemu-${qemu_arch}-static.tar.gz"
     fi
 
     # create Dockerifle
@@ -96,7 +94,7 @@ EOF
     else
         cat > "${arch}/Dockerfile" <<EOF
 FROM multiarch/busybox:${arch}-slim
-ADD qemu-${qemu_arch}-static.tar.xz /usr/bin
+ADD x86_64_qemu-${qemu_arch}-static.tar.gz /usr/bin
 EOF
     fi
 

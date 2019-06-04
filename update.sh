@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/bin/bash
+set -xeo pipefail
 
 ARCHS=${ARCHS:-"alpha amd64 arm64 armel armhf hppa hurd-i386 i386 kfreebsd-amd64 kfreebsd-i386 m68k mips mipsel powerpc powerpcspe ppc64 ppc64el s390x sh4 sparc64 x32"}
 
-set -e
+wget_common_opts="-t 3 -w 1 --retry-connrefused --no-dns-cache --retry-on-http-error=403"
+wget_opts="${wget_common_opts} -N"
 
 for arch in ${ARCHS}; do
     mkdir -p "${arch}/slim"
@@ -25,8 +27,8 @@ for arch in ${ARCHS}; do
     if [ ! -f "${arch}/busybox-static.deb" ]; then
         (
             set -x
-            curl "${deb}" > "${arch}/busybox-static.deb.tmp"
-            mv "${arch}/busybox-static.deb.tmp" "${arch}/busybox-static.deb"
+            wget ${wget_opts} "${deb}"
+            mv "$(basename ${deb})" "${arch}/busybox-static.deb"
         )
     fi
 

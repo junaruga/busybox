@@ -1,0 +1,29 @@
+dist: xenial
+services: docker
+language: bash
+env:
+    matrix:
+        - ARCHS=alpha
+        - ARCHS=amd64
+        - ARCHS=arm64
+        - ARCHS=armel
+        - ARCHS=armhf
+        - ARCHS=hppa
+        - ARCHS=hurd-i386
+        - ARCHS=i386
+        - ARCHS=kfreebsd-amd64
+        - ARCHS=kfreebsd-i386
+        - ARCHS=m68k
+        - ARCHS=mips
+        - ARCHS=mipsel
+        - ARCHS=powerpc
+        - ARCHS=powerpcspe
+        - ARCHS=ppc64
+        - ARCHS=ppc64el
+        - ARCHS=s390x
+        - ARCHS=sh4
+        - ARCHS=sparc64
+        - ARCHS=x32
+script:
+    - ./update.sh
+    - docker images

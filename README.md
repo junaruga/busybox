@@ -1,4 +1,4 @@
-# :earth_africa: busybox
+# :earth_africa: busybox [![Build Status](https://travis-ci.org/multiarch/busybox.svg?branch=master)](https://travis-ci.org/multiarch/busybox)
 
 ![](https://raw.githubusercontent.com/multiarch/dockerfile/master/logo.jpg)
 

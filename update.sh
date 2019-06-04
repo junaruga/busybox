@@ -32,31 +32,28 @@ for arch in ${ARCHS}; do
 
     # extract /bin/busybox
     if [ ! -f "${arch}/slim/rootfs/bin/busybox" ]; then
-        (
-            cd "${arch}"
-            set -x
-            ar vx busybox-static.deb data.tar.xz data.tar.gz
-            tar --strip=2 -xvf data.tar.* ./bin/busybox
-            mkdir -p ./slim/rootfs/bin
-            mv ./busybox ./slim/rootfs/bin/
-            ls -l $(pwd)/slim/rootfs/bin/busybox
-        )
+        pushd "${arch}"
+        ar vx busybox-static.deb data.tar.xz data.tar.gz
+        tar --strip=2 -xvf data.tar.* ./bin/busybox
+        mkdir -p ./slim/rootfs/bin
+        mv ./busybox ./slim/rootfs/bin/
+        ls -l $(pwd)/slim/rootfs/bin/busybox
+        popd
     fi
 
     # create symlinks
     if [ ! -f "${arch}/slim/rootfs/bin/ls" ]; then
-        (
-            cd "${arch}/slim/rootfs"
-            echo "This need binfmt to be configured"
-            echo "  docker run --rm --privileged multiarch/qemu-user-static:register --reset."
-            modules=$("$(pwd)/bin/busybox" --list-modules)
-            for module in $modules; do
-                mkdir -p "$(dirname $module)"
-                if [ "${module}" != "bin/busybox" ]; then
-                    ln -s /bin/busybox "${module}"
-                fi
-            done
-        )
+        pushd "${arch}/slim/rootfs"
+        echo "This need binfmt to be configured"
+        echo "  docker run --rm --privileged multiarch/qemu-user-static:register --reset."
+        modules=$("$(pwd)/bin/busybox" --list-modules)
+        for module in $modules; do
+            mkdir -p "$(dirname $module)"
+            if [ "${module}" != "bin/busybox" ]; then
+                ln -s /bin/busybox "${module}"
+            fi
+        done
+        popd
     fi
 
     # create dirs and files

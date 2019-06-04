@@ -39,6 +39,7 @@ for arch in ${ARCHS}; do
             tar --strip=2 -xvf data.tar.* ./bin/busybox
             mkdir -p ./slim/rootfs/bin
             mv ./busybox ./slim/rootfs/bin/
+            ls -l $(pwd)/slim/rootfs/bin/busybox
         )
     fi
 
